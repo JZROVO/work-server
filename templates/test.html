@@ -1,0 +1,461 @@
+<html>
+    <head>
+        <meta name="viewport" content=" width-device-width , initial-scale = 1.0"/>
+        <meta charset="uft-8"/>
+        <title> 抽卡遊戲</title>
+        <style>
+            
+            button[disabled]{
+                color: rgb(0, 32, 81) !important;
+                background:  rgb(0, 32, 81) !important;
+                box-shadow: none !important;
+                text-shadow: none;
+            }
+            body{               
+                background-repeat: no-repeat;
+                background:linear-gradient(to bottom, #000428, #004e92);
+            }
+            #title{
+                font-size: 150px;
+                display: flex;
+                justify-content: center;
+                color:transparent;
+                position: relative;
+                background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/209981/6963bbf342d87b3a2150bd8f59682b89.jpg);
+                -webkit-background-clip:text;
+                background-size: contain;
+                &::before {
+                    content: attr(data-heading);
+                    position: absolute;
+                    display: flex;
+                    justify-content: center;                   
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    background: linear-gradient(45deg, rgba(255,255,255,0) 45%,rgba(255,255,255,0.8) 50%,rgba(255,255,255,0) 55%,rgba(255,255,255,0) 100%);
+                    -webkit-background-clip: text;
+                    color: transparent;
+                    mix-blend-mode: screen;
+                    animation:shine 1s infinite;
+                    background-size: 200%;
+                    text-shadow: 
+                        2px 2px 10px rgba(#000, 0.2),
+                        -2px 2px 10px rgba(#000, 0.2),
+                        -2px -2px 10px rgba(#000, 0.2);
+                }
+            }
+            @keyframes shine{
+                0% {background-position: -100%;}
+                100% {background-position: 100%;}
+            }          
+            .draw{
+                visibility:hidden;
+                color: purple;
+                background-color: #f1c40f;
+                width: 200px;
+                height: 50px;
+                border:none;
+                border-radius: 5px;
+                font-size: 35px;
+                text-shadow:-3px 3px 3px rgb(209 132 0),
+                            -3px 3px 3px rgb(209 132 0),
+                            -3px 3px 3px rgb(209 132 0),
+                            -3px 3px 3px rgb(209 132 0),
+                            -3px 3px 3px rgb(209 132 0),
+                            -3px 3px 3px rgb(209 132 0);
+                box-shadow: 0px 15px 0px 0px #f39c12;
+                transition: all.5s;              
+            }           
+            .draw:hover{
+                background-color: #fcdc5e;
+            }
+            .stacksize{
+                display: none;
+            }
+            .draw:active{
+                transform: translate(0,4px);
+                box-shadow: 0px 1px 0px 0px #f39c12;               
+                }
+            #block1{
+                display: flex;
+                flex-direction:row;
+                justify-content: center;               
+            }
+            #block2{
+                display: flex;
+                justify-content: center;
+            }
+            #start{
+                visibility:visible;
+                color: rgba(4, 148, 35, 0.822);
+                background: transparent;
+                border: 2px solid purple;
+                border-radius: 6px;
+                width: 150px;
+                padding: 16px 32px;
+                text-decoration: none;
+                margin: 4px 2px;
+                font-size: 16px;
+            }
+            #start:hover{
+                background-color:#008cba;
+                color: yellow;
+            }
+            #intro{
+                visibility:visible;
+                color: rgba(4, 148, 35, 0.822);
+                background: transparent;
+                border: 2px solid purple;
+                border-radius: 6px;
+                width: 150px;
+                padding: 16px 32px;
+                text-decoration: none;
+                margin: 4px 2px;
+                font-size: 16px;
+            }
+            #intro:hover{
+                background-color:#008cba;
+                color: yellow;
+            }
+            #owncards{
+                float: left;    
+                font-size: 80px;               
+            }
+            #cardimg{               
+                display:none;
+                border:3px yellowgreen solid;
+
+            }
+            #abc{
+                font-size: 30px;
+            }           
+            #abc:hover ~#cardimg {
+                transform: scale(1);
+                display:block;
+                left:40%;
+                position: absolute;
+                top:40%;                                    
+            }
+            .owncardnumber{
+                color:#00ad65;
+                display:flex;
+                
+                font-size:30px;
+            }
+            #picked,picked:focus{
+               
+                position: relative;
+                min-width: 100px;
+                background: transparent;
+                color: #5903fa;
+                font-size: 1rem;               
+                text-align: center;
+                text-transform: uppercase;
+                text-decoration: none;
+                box-sizing: inherit;
+                padding: 10px 20px;
+                border: 1px solid#E1332D;
+                border-radius: 6px;
+                box-shadow: inset 0 0 20px rgba(225, 51, 45, 0);
+                outline: 1px solid !important;
+                outline-color: rgba(225, 51, 45, 0.5);
+                outline-offset: 0px;
+                text-shadow: none;
+                transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
+            }
+            #picked:hover{
+                color: #5903fa;
+                border: 1px solid #E1332D;
+                box-shadow: inset 0 0 20px rgba(225, 51, 45, 0.5), 0 0 20px rgba(225, 51, 45, 0.2);
+                outline: 1px solid !important;
+                outline-color: rgba(225, 51, 45, 0) !important;
+                outline-offset: 15px;
+                text-shadow: 1px 1px 2px #427388;
+            }           
+            #wordnumber{
+                display:none;
+                flex-direction: row;
+                justify-content:flex-end;
+                font-size: 30px;
+                color:#0affb5;
+            }
+            #gamblenumber{
+                caret-color: #0affb5;
+                width:50px;
+            }
+            #reset{
+                position: absolute;
+                bottom: 10%;
+                left:85%;
+                width:7.7%;
+                height:10%;
+                border: #E1332D;
+                border-radius: 2px;
+                font-size:150%;
+                padding: 10px 20px;
+                outline:4px solid;
+                outline-color: #4d02fd;
+                transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
+                background-color: transparent;
+                color: yellowgreen;
+                overflow:hidden;
+            }           
+            #reset:hover{
+                color:rgb(255, 94, 0);
+                text-shadow:rgb(230, 93, 8) ;
+                outline:5px solid;
+                outline-color: #ff0404;
+                outline-offset: -10px;
+                font-size: 180%;
+                background-color: transparent;
+                box-shadow: 0 0 5px #03e9f4,
+                            0 0 25px #03e9f4,
+                            0 0 50px #03e9f4,
+                            0 0 200px #03e9f4;
+            }
+            
+            .light div{
+                position: absolute;      
+                overflow: hidden;        
+            }
+            .light div:nth-child(1){               
+                bottom:9.8%;
+                width: 2%;
+                height: 3px;
+                left: -100%;
+                background: linear-gradient(to right,transparent,#4d02fd);
+                animation: animate1 1s linear infinite;
+                }
+            .light div:nth-child(2){
+                top:80%;
+                width: 3px;
+                height: 2%;               
+                right: 7.2%;
+                background: linear-gradient(to top,transparent,#4d02fd);
+                animation: animate2 1s linear infinite;
+                animation-delay: 0.25s;
+            }
+            .light div:nth-child(3){               
+                bottom:19.8%;
+                width: 2%;
+                height: 3px;
+                left: -100%;
+                background: linear-gradient(to left,transparent,#4d02fd);
+                animation: animate3 1s linear infinite;
+                animation-delay: 0.5s;
+            }
+            .light div:nth-child(4){
+                top:80%;
+                width: 3px;
+                height: 2%;               
+                right: 14.9%;
+                background: linear-gradient(to bottom,transparent,#4d02fd);
+                animation: animate4 1s linear infinite;
+                animation-delay: 0.75s;
+            }           
+            #treasure{
+                display: none;
+            }
+            
+            @keyframes animate1 {
+                0% {left: 85%}
+                25%,50%,75%,100% {left: 91%;}
+                }
+            @keyframes animate2 {
+                0% {top: 90%;}
+                25%,50%,75%,100% {top: 80%;}
+                }
+            @keyframes animate3 {
+                0% {left: 90%;}
+                25%,50%,75%,100% {left: 85%;}
+                }
+            @keyframes animate4 {
+                0% {top: 80%;}
+                25%,50%,75%,100% {top: 88%;}
+                }
+
+
+
+        </style>
+        </head>
+        <body>
+            <script>
+                let totalcounter = 0;
+                function started()
+                    {
+                    var drawbutton = document.querySelector('.draw');
+                    drawbutton.style.visibility = "visible";
+                    var startbutton = document.querySelector('#start');
+                    startbutton.style.display = "none";
+                    var rowbutton = document.querySelector("#intro");
+                    rowbutton.style.display="none";
+                    var gamble = document.querySelector("#wordnumber");
+                    gamble.style.display = "flex";
+                    }              
+                function draw()
+                    {
+                    totalcounter = totalcounter+1;
+                    fetch("/draw")
+                        .then((response)=>{
+                            return response.json();    
+                        })
+                        .then((a)=>{
+                            cardname = a.name;
+                            stack = a.stack;
+                            console.log(stack);
+                            const div = document.createElement('div');
+                            const pic = document.createElement("img");
+                            div.className = cardname;
+                            pic.id = "cardimg";
+                            pic.src ="/static/"+ cardname +".png";
+                            div.innerHTML = "<span id=abc class=" + cardname + ">"+ cardname +"</span>" +  "<input type = radio id=cards name=card value ="+ cardname +" />" + "<div class=owncardnumber id="+ cardname +"></div>" +"<span class=stacksize id="+cardname+"size"+">" + stack +"</span>" ;
+                            document.getElementById('owncards').appendChild(div).appendChild(pic);
+                        })
+                    var drawbutton = document.querySelector('.draw');
+                    drawbutton.disabled = true;
+                    var countdown = setInterval(function(){
+                        var drawbutton = document.querySelector('.draw');
+                        drawbutton.disabled = false; 
+                        
+                    },2000);
+                    
+                    }
+                function pick()
+                    {
+                    var userInput = document.querySelector('input[name="card"]:checked').value;
+                    var gamblenumber = document.getElementById("gamblenumber").value;
+                    gamblenumber = parseInt(gamblenumber);
+                    console.log(gamblenumber);
+                    if (gamblenumber == null){
+                        alert("please enter the correct number");
+                    }
+                    else if(isNaN(gamblenumber) == true){
+                        alert("only Numbers are allowed");                    
+                    }
+                    else{                                          
+                        var dot = document.querySelector("input[value ="+ userInput+"]")
+                        var result = document.getElementById(userInput)                              
+                        luckynumber = Math.floor(Math.random() * 3);
+                        
+                        console.log(luckynumber)
+                        if(result.innerHTML == ""){
+                            owncardcounter = 1;
+                            if (owncardcounter-gamblenumber<0){
+                                alert("You don't have enough")
+                            }else{
+                                if (luckynumber == 2){
+                                    owncardcounter = owncardcounter * 2;
+                                    result.innerHTML = "X" + owncardcounter ;
+                                    alert("Success X2");
+                                                                
+                                }else if(luckynumber == 1 ){
+                                    owncardcounter = owncardcounter *1;
+                                    result.innerHTML = "X" + owncardcounter ;
+                                    alert("Peace X1");
+
+                                }else if(luckynumber == 0){
+                                    owncardcounter = owncardcounter * 0;
+                                    var deleted = document.getElementsByClassName(userInput);
+                                    deleted[1].innerHTML ="";                           
+                                    dot.remove();               
+                                    result.remove();
+                                    alert("OH NO!! x0");                                                                                                        
+                                }
+                            }                   
+                        }else{
+                            owncardcounter = result.innerHTML.substr(1);
+                            if (owncardcounter - gamblenumber<0){
+                                alert("You don't have enough");
+                            }else{
+                               
+                                if (luckynumber == 2){
+                                    calculatenumber = gamblenumber * 2;
+                                    owncardcounter = parseInt(owncardcounter) + parseInt(calculatenumber) - parseInt(gamblenumber);
+                                    console.log(owncardcounter);
+                                    result.innerHTML = "X" + owncardcounter ;
+                                    alert("Success X2");
+
+                                }else if(luckynumber == 1 ){
+                                    calculatenumber = gamblenumber *1;
+                                    owncardcounter = parseInt(owncardcounter) + parseInt(calculatenumber) - parseInt(gamblenumber);
+                                    console.log(owncardcounter);
+                                    result.innerHTML = "X" + owncardcounter;
+                                    alert("Peace X1");
+                                    
+                                }else if(luckynumber == 0){
+                                    calculatenumber = gamblenumber * 0;
+                                    owncardcounter = parseInt(owncardcounter) + parseInt(calculatenumber) - parseInt(gamblenumber);
+                                    if (owncardcounter !=0){
+                                        result.innerHTML = "X" + owncardcounter;
+                                    }else{
+                                        var deleted = document.getElementsByClassName(userInput);
+                                        deleted[1].innerHTML ="";                           
+                                        dot.remove();               
+                                        result.remove();
+                                    }
+                                    alert("OH NO!! x0");                          
+                                    }
+                                }    
+                            }                              
+                        }
+                    stacksizename = userInput + "size";
+                    stacksize = document.getElementById(stacksizename).innerHTML;
+                    owncardcounter = result.innerHTML.substr(1);
+                    console.log(stacksizename)
+                    console.log(stacksize)
+                    if (owncardcounter >= stacksize){
+                        document.querySelector("#treasure").style.display = "block";
+                    }
+                    }
+                function reset(){
+                    window.location.reload("/");
+                }                
+            </script>
+
+        <h1 id="title" contenteditable data-heading="抽卡模擬器">抽卡模擬器</h1>
+        
+        <div id="block1">
+        <button id="start" type="button" onclick="started()">點此開始</button>
+        <button id = "intro" type="button" onclick="showintro()">遊戲規則</button><br/>
+        </div>
+        <div id="block2">
+        <button class="draw" type="button" onclick="draw()">抽牌</button>
+        </div>
+        <!--a href="/static/IMG_0109.jpg">連結到網頁</a>--><br/>
+        <!--img src="/static/IMG_0109.jpg"</img>--> 
+       
+        <!--form action="/show">
+            <input type="text" name="data"/>
+            <button>典籍送出表單</button>
+        </form>
+        <hr/>
+        <form action="/calculate" method="POST">
+            <input type="text" name="max"/>
+            <button>點擊計算</button>
+        </form>
+        <hr/>
+        <h3>會員註冊</h3>
+        <form action="/signup" method="POST">
+            暱稱<input type="text" name="nickname"/><br/>
+            帳號<input type="text" name="ID"/><br/>
+            密碼<input type="password" name="password"/><br/>
+            <button>註冊</button>
+        </form>-->
+        <form >
+            <div id="owncards"></div>
+            <div id="wordnumber">數量:<input id="gamblenumber" type= "text" name="數量">
+            <button id="picked" type="button" onclick=pick()>選擇</button>
+            </div>
+        </form>
+        
+        
+        <div class = "light">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <button id="reset" type ="button" onclick=reset()>RESET</button>
+        </div> 
+        <img id="treasure" src="static/treasure.gif">
+        </body>
+</html>
